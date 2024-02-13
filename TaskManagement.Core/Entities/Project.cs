@@ -6,16 +6,14 @@ using System.Threading.Tasks;
 
 namespace TaskManagement.Core.Entities
 {
-    public class Project 
+    public class Project : EntityBase
     {
-        public Project(string title, string description) 
+        public Project(string title, string description) : base()
         {
             Title = title; 
             Description = description;
             Tasks = new List<TaskEntity>();
-            Id = Guid.NewGuid();
         }
-        public Guid Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public List<TaskEntity> Tasks { get; set; }

@@ -42,6 +42,7 @@ namespace TaskManagement.Infrastructure.Persistence.Repositories
         public TaskEntity? GetTask(Guid id)
         {
             return _context.Tasks
+                    .Include(d => d.TaskFollowUp)
                     .SingleOrDefault(d => d.IdTask == id);
         }
         public Project AddProject(Project project)
@@ -78,6 +79,20 @@ namespace TaskManagement.Infrastructure.Persistence.Repositories
             task.Comments += ", " + comments;
             _context.SaveChanges();
             return task;
+        }
+        public void AddFollowUp(Guid id, TaskEntity task, Guid userId)
+        {
+            var taskUpdate = _context.Tasks
+                    .SingleOrDefault(d => d.IdTask == id);
+            if (taskUpdate == null)
+            {
+                throw new Exception("Identificador de tarefa inválido.");
+            }
+
+            var followUp = new TaskFollowUp(task.IdTask, task.Title, task.Description, task.ExpirationDate, task.Status, task.Priority, task.Comments, task.isDeleted, userId);
+
+            taskUpdate.TaskFollowUp.Add(followUp);
+            _context.SaveChanges();
         }
         public void UpdateTask(Guid id, TaskEntity task)
         {

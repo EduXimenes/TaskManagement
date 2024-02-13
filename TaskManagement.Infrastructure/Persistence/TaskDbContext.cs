@@ -20,6 +20,7 @@ namespace TaskManagement.Infrastructure.Persistence
         }
         public DbSet<TaskEntity> Tasks { get; set; }
         public DbSet<Project> Projects { get; set; }
+        public DbSet<TaskFollowUp> FollowUp { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Project>(e =>
@@ -30,14 +31,6 @@ namespace TaskManagement.Infrastructure.Persistence
                 e.Property(de => de.Description)
                     .HasMaxLength(200)
                     .HasColumnType("varchar(200)");
-                ////Declarando que existem muitas Task para um Projeto (List<Tasks>) e que sua chave é a Id
-                //e.HasMany(de => de.Tasks)
-                //    .WithOne()
-                //    .HasForeignKey(de => de.Id);
-                //e.HasMany(p => p.Tasks)
-                //    .WithOne(t => t.)  // Especifica a propriedade de navegação em TaskEntity que representa o relacionamento
-                //    .HasForeignKey(t => t.ProjectId)  // Especifica a chave estrangeira em TaskEntity
-                //    .IsRequired();  // Indica que a relação é obrigatória (opcional, se for o caso)
 
             });
             builder.Entity<TaskEntity>(e =>
@@ -64,6 +57,11 @@ namespace TaskManagement.Infrastructure.Persistence
                     .WithOne()        
                     .HasForeignKey(b => b.Id); 
 
+            builder.Entity<TaskEntity>()
+                    .HasMany(a => a.TaskFollowUp)
+                    .WithOne()
+                    .HasForeignKey(b => b.IdTask);
+                    
         }
         
     }

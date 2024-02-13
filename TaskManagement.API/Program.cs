@@ -6,8 +6,12 @@ using TaskManagement.Infrastructure.Persistence.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var con = builder.Configuration.GetConnectionString("TaskManagementCS");
+
 // Add services to the container.
 builder.Services.AddDbContext<TaskDbContext>(options => options.UseInMemoryDatabase("DevEventsInMemory"));
+//builder.Services.AddDbContext<TaskDbContext>(options =>
+//    options.UseSqlServer(con));
 builder.Services.AddAutoMapper(typeof(TaskManagementProfile).Assembly);
 builder.Services.AddTransient<ITaskManagementRepository, TaskManagementRepository>();
 

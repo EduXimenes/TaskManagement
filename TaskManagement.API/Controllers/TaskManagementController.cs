@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using TaskManagement.Application.InputModels;
 using TaskManagement.Application.ViewModels;
@@ -68,6 +69,8 @@ namespace TaskManagement.API.Controllers
             {
                 return NotFound();
             }
+            _repository.AddFollowUp(idTask, updateTask, Guid.NewGuid());
+
             var input = _mapper.Map<TaskEntity>(task);
             _repository.UpdateTask(idTask, input);
 

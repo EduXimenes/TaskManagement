@@ -13,5 +13,6 @@ namespace TaskManagement.Infrastructure.Persistence.Repositories
         TaskEntity? GetTask(Guid id);
         void UpdateTask(Guid id, TaskEntity task);
         TaskEntity AddComments(Guid id, string comments);
+        void AddFollowUp(Guid id, TaskEntity task, Guid userId);
     }
 }

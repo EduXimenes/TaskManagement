@@ -31,7 +31,7 @@ namespace TaskManagement.Core.Entities
         public TaskPriority Priority { get; set; }
         public string Comments { get; set; } = string.Empty;
         public bool isDeleted { get; set; } = false;
-
+        public List<TaskFollowUp> TaskFollowUp { get; set; } = new List<TaskFollowUp>();
 
         public void Update(TaskEntity entity)
         {
