@@ -61,7 +61,8 @@ namespace TaskManagement.Infrastructure.Persistence
                     .HasMany(a => a.TaskFollowUp)
                     .WithOne()
                     .HasForeignKey(b => b.IdTask);
-                    
+            builder.Entity<TaskFollowUp>()
+                   .HasKey(d => d.idFollowUp);
         }
         
     }

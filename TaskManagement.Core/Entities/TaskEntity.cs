@@ -12,6 +12,14 @@ namespace TaskManagement.Core.Entities
 {
     public class TaskEntity 
     {
+        public TaskEntity(string title, string description, DateTime expirationDate, TaskStatusCode status)
+        {
+            Title = title;
+            Description = description;
+            ExpirationDate = expirationDate;
+            Status = status;
+        }
+
         public TaskEntity(string title, string description, DateTime expirationDate, TaskStatusCode status, TaskPriority priority)
         {
             Title = title;
@@ -20,8 +28,8 @@ namespace TaskManagement.Core.Entities
             Status = status;
             Priority = priority;
             IdTask = Guid.NewGuid();
-
         }
+        
         public Guid Id { get; set; }
         public Guid IdTask { get; set; }
         public string Title { get; set; }
@@ -33,7 +41,7 @@ namespace TaskManagement.Core.Entities
         public bool isDeleted { get; set; } = false;
         public List<TaskFollowUp> TaskFollowUp { get; set; } = new List<TaskFollowUp>();
 
-        public void Update(TaskEntity entity)
+        public void UpdateInput(TaskEntity entity)
         {
             Title = entity.Title;
             Description = entity.Description;

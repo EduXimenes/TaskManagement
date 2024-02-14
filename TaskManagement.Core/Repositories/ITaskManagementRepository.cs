@@ -4,15 +4,15 @@ namespace TaskManagement.Infrastructure.Persistence.Repositories
 {
     public interface ITaskManagementRepository
     {
-        Project AddProject(Project project); 
-        TaskEntity AddTask(Guid id, TaskEntity task);
-        void DeleteProject(Guid idProject);
-        void DeleteTask(Guid idTask);
-        List<Project> GetAllProjects();
-        Project? GetProject(Guid id);
-        TaskEntity? GetTask(Guid id);
-        void UpdateTask(Guid id, TaskEntity task);
-        TaskEntity AddComments(Guid id, string comments);
-        void AddFollowUp(Guid id, TaskEntity task, Guid userId);
+        Task<Project> AddProject(Project project); 
+        Task<TaskEntity> AddTask(Guid id, TaskEntity task); 
+        Task DeleteProject(Guid idProject); 
+        Task DeleteTask(Guid idTask);
+        Task<List<Project>> GetAllProjects();   
+        Task<Project?> GetProject(Guid id);  
+        Task<TaskEntity?> GetTask(Guid id); 
+        Task UpdateTask(Guid id, TaskEntity task); 
+        Task<TaskEntity> AddComments(Guid id, string comments); 
+        Task<TaskEntity> AddFollowUp(Guid id, TaskEntity task, Guid userId); 
     }
 }

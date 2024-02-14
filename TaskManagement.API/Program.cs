@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using TaskManagement.Application.Services;
 using TaskManagement.Infrastructure.Mapper;
 using TaskManagement.Infrastructure.Persistence;
 using TaskManagement.Infrastructure.Persistence.Repositories;
@@ -12,8 +13,13 @@ var con = builder.Configuration.GetConnectionString("TaskManagementCS");
 builder.Services.AddDbContext<TaskDbContext>(options => options.UseInMemoryDatabase("DevEventsInMemory"));
 //builder.Services.AddDbContext<TaskDbContext>(options =>
 //    options.UseSqlServer(con));
+
 builder.Services.AddAutoMapper(typeof(TaskManagementProfile).Assembly);
-builder.Services.AddTransient<ITaskManagementRepository, TaskManagementRepository>();
+builder.Services.AddScoped<ITaskManagementService, TaskManagementService>();
+builder.Services.AddScoped<ITaskManagementRepository, TaskManagementRepository>();
+builder.Services.AddScoped<TaskManagementService>();
+//builder.Services.AddTransient<ITaskManagementRepository, TaskManagementRepository>();
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

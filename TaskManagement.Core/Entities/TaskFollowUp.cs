@@ -23,8 +23,9 @@ namespace TaskManagement.Core.Entities
             this.isDeleted = isDeleted;
             UserId = userId;
             ChangeDate = DateTime.Now;
+            this.idFollowUp = Guid.NewGuid();
         }
-
+        public Guid idFollowUp {  get; set; }
         public Guid IdTask { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
@@ -35,6 +36,5 @@ namespace TaskManagement.Core.Entities
         public bool isDeleted { get; set; } 
         public Guid UserId { get; set;}
         public DateTime ChangeDate { get; set; }
-
     }
 }

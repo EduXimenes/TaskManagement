@@ -19,39 +19,37 @@ namespace TaskManagement.Infrastructure.Persistence.Repositories
             _context = context;
             _mapper = mapper;
         }
-        public List<Project>? GetAllProjects()
+        public async Task<List<Project>> GetAllProjects()
         {
-            var projects = _context.Projects;
-            if (projects == null)
-            {
-                return null;
-            }
-            return _context.Projects
-                 .Include(d => d.Tasks)
-                 .Where(d => !d.isDeleted)
-                 .ToList();
-        }
-        public Project? GetProject(Guid id)
-        {
+            var projects = await _context.Projects
+                .Include(d => d.Tasks)
+                .Where(d => !d.isDeleted)
+                .ToListAsync();
 
-            var project = _context.Projects
+            return projects;
+        }
+        public async Task<Project?> GetProject(Guid id)
+        {
+            var project = await _context.Projects
                     .Include(d => d.Tasks)
-                    .SingleOrDefault(d => d.Id == id);
+                    .SingleOrDefaultAsync(d => d.Id == id);
+
             return project;
         }
-        public TaskEntity? GetTask(Guid id)
+        public async Task<TaskEntity?> GetTask(Guid id)
         {
-            return _context.Tasks
+            var task = await _context.Tasks
                     .Include(d => d.TaskFollowUp)
-                    .SingleOrDefault(d => d.IdTask == id);
+                    .SingleOrDefaultAsync(d => d.IdTask == id);
+            return task;
         }
-        public Project AddProject(Project project)
+        public async Task<Project> AddProject(Project project)
         {
             _context.Projects.Add(project);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return project;
         }
-        public TaskEntity AddTask(Guid id, TaskEntity task)
+        public async Task<TaskEntity> AddTask(Guid id, TaskEntity task)
         {
             var project = _context.Projects
                             .SingleOrDefault(d => d.Id == id);
@@ -65,25 +63,25 @@ namespace TaskManagement.Infrastructure.Persistence.Repositories
                 throw new Exception("O numero máximo de tarefas já foram atribuídas, conclua ou encerre alguma tarefa antes adicionar novas.");
             }
             _context.Tasks.Add(task);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return task;
 
         }
-        public TaskEntity AddComments(Guid id, string comments)
+         public async Task<TaskEntity> AddComments(Guid id, string comments)
         {
-            var task = GetTask(id);
+            var task = await GetTask(id);
             if (task == null)
             {
                 throw new Exception("Identificador de tarefa inválido.");
             }
-            task.Comments += ", " + comments;
-            _context.SaveChanges();
+            task.Comments += " " + comments;
+            await _context.SaveChangesAsync();
             return task;
         }
-        public void AddFollowUp(Guid id, TaskEntity task, Guid userId)
+        public async Task<TaskEntity> AddFollowUp(Guid id, TaskEntity task, Guid userId)
         {
-            var taskUpdate = _context.Tasks
-                    .SingleOrDefault(d => d.IdTask == id);
+            var taskUpdate = await _context.Tasks
+                    .SingleOrDefaultAsync(d => d.IdTask == id);
             if (taskUpdate == null)
             {
                 throw new Exception("Identificador de tarefa inválido.");
@@ -91,37 +89,36 @@ namespace TaskManagement.Infrastructure.Persistence.Repositories
 
             var followUp = new TaskFollowUp(task.IdTask, task.Title, task.Description, task.ExpirationDate, task.Status, task.Priority, task.Comments, task.isDeleted, userId);
 
-            taskUpdate.TaskFollowUp.Add(followUp);
-            _context.SaveChanges();
+            task.TaskFollowUp.Add(followUp);
+            return task;
         }
-        public void UpdateTask(Guid id, TaskEntity task)
+        public async Task UpdateTask(Guid id, TaskEntity task)
         {
-            var taskUpdate = _context.Tasks
-                    .SingleOrDefault(d => d.IdTask == id);
+            var taskUpdate = await _context.Tasks
+                        .SingleOrDefaultAsync(d => d.IdTask == id);
             if (taskUpdate == null)
             {
                 throw new Exception("Identificador de tarefa inválido.");
             }
-            taskUpdate.Update(task);
-
-            _context.SaveChanges();
+            _context.Tasks.Update(taskUpdate);
+            await _context.SaveChangesAsync();
         }
-        public void DeleteTask(Guid idTask)
+        public async Task DeleteTask(Guid idTask)
         {
-            var task = _context.Tasks
-                            .SingleOrDefault(d => d.IdTask == idTask);
+            var task = await _context.Tasks
+                            .SingleOrDefaultAsync(d => d.IdTask == idTask);
             if (task == null)
             {
                 throw new Exception("Identificador de tarefa inválido.");
             }
             task.isDeleted = true;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void DeleteProject(Guid idProject)
+        public async Task DeleteProject(Guid idProject)
         {
-            var project = _context.Projects
-                            .SingleOrDefault(d => d.Id == idProject);
+            var project = await _context.Projects
+                            .SingleOrDefaultAsync(d => d.Id == idProject);
             if (project == null)
             {
                 throw new Exception("Identificador do projeto inválido.");
@@ -133,7 +130,7 @@ namespace TaskManagement.Infrastructure.Persistence.Repositories
                 throw new Exception("Existem tarefas pendentes neste projeto, conclua ou encerre as tarefas antes de remover o projeto.");
             }
             project.isDeleted = true;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }
