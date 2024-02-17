@@ -1,4 +1,5 @@
-﻿using TaskManagement.Core.Entities;
+﻿using System.Threading.Tasks;
+using TaskManagement.Core.Entities;
 
 namespace TaskManagement.Infrastructure.Persistence.Repositories
 {
@@ -12,7 +13,11 @@ namespace TaskManagement.Infrastructure.Persistence.Repositories
         Task<Project?> GetProject(Guid id);  
         Task<TaskEntity?> GetTask(Guid id); 
         Task UpdateTask(Guid id, TaskEntity task); 
-        Task<TaskEntity> AddComment(TaskComment comment); 
-        Task<TaskEntity> AddFollowUp(Guid id, TaskEntity task, Guid userId); 
+        Task<TaskEntity> AddComment(Guid idTask, TaskComment comment); 
+        Task<TaskEntity> AddFollowUp(Guid idTask, TaskEntity task, Guid userId);
+        Task<TaskFollowUp?> GetFollowUp(Guid idFollowUp);
+        Task<List<TaskFollowUp>> GetAllFollowUp();
+        Task<List<TaskComment>> GetComments(Guid idTask);
+
     }
 }

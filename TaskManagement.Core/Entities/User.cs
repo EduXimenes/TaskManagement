@@ -9,20 +9,16 @@ namespace TaskManagement.Core.Entities
 {
     public class User : EntityBase
     {
-        public User(Role role, string name, string email, string password) : base()
+        public User(Role role, string name) : base()
         {
             Role = role;
             Name = name;
-            Email = email;
-            Password = password;
             isDeleted = false;
             idUser = Id;
         }
         public Guid idUser { get; set; }
         public Role Role { get; set; }
         public string Name { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
         public bool isDeleted {  get; set; }
     }
 }

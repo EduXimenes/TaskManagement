@@ -25,10 +25,14 @@ namespace TaskManagement.Core.Entities
             ChangeDate = DateTime.Now;
             idFollowUp = Id;
         }
+        public TaskFollowUp()
+        {
+            
+        }
         public Guid idFollowUp {  get; set; }
         public Guid IdTask { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
+        public string? Title { get; set; }
+        public string? Description { get; set; }
         public DateTime ExpirationDate { get; set; }
         public TaskStatusCode Status { get; set; }
         public TaskPriority Priority { get; set; }

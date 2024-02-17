@@ -48,7 +48,6 @@ namespace TaskManagement.Core.Entities
             Description = entity.Description;
             ExpirationDate = entity.ExpirationDate;
             Status = entity.Status;
-            Comments = entity.Comments;
         }
 
     }

@@ -16,6 +16,7 @@ builder.Services.AddDbContext<TaskDbContext>(options => options.UseInMemoryDatab
 builder.Services.AddAutoMapper(typeof(TaskManagementProfile).Assembly);
 builder.Services.AddScoped<ITaskManagementService, TaskManagementService>();
 builder.Services.AddScoped<ITaskManagementRepository, TaskManagementRepository>();
+builder.Services.AddScoped<IPerformanceService, PerformanceService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<TaskManagementService>();

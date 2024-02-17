@@ -26,7 +26,7 @@ namespace TaskManagement.API.Controllers
             var projects = await _context.GetAllProjects();
             return Ok(projects);
         }
-
+        
         [HttpGet("/GetProject/{idProject}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -56,6 +56,37 @@ namespace TaskManagement.API.Controllers
 
             return Ok(task);
         }
+        [HttpGet("/GetFollowUps")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllFollowUp()
+        {
+            var followup = await _context.GetAllFollowUp();
+            return Ok(followup);
+        }
+        [HttpGet("/GetAllFollowUp/{idFollowUp}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetFollowUp(Guid idFollowUp)
+        {
+            var followup = await _context.GetFollowUp(idFollowUp);
+
+            if (followup == null)
+            {
+                return NotFound();
+            }
+            var viewModel = _mapper.Map<TaskFollowUp>(followup);
+
+            return Ok(viewModel);
+        }
+        [HttpGet("/GetComments/{idTask}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetComments(Guid idTask)
+        {
+            var comments = await _context.GetComments(idTask);
+            return Ok(comments);
+        }
+
         [HttpPut("/UpdateTask/{idTask}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -66,10 +97,9 @@ namespace TaskManagement.API.Controllers
             {
                 return NotFound();
             }
+            await _context.UpdateTask(idTask, task);
 
-            var taskinput = await _context.AddFollowUp(idTask, task, idUser);
-
-            await _context.UpdateTask(idTask, taskinput);
+            await _context.AddFollowUp(idTask, task, idUser);
 
             return Ok();
         }
@@ -113,7 +143,7 @@ namespace TaskManagement.API.Controllers
             var taskInput = _mapper.Map<TaskUpdateInputModel>(taskComment);
             await _context.AddFollowUp(idTask, taskInput, idUser);
 
-            return Ok(taskComment);
+            return Ok(taskComment.Comments);
         }
 
         [HttpDelete("DeleteTask/{idTask}")]

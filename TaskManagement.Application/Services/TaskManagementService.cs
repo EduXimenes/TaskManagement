@@ -42,7 +42,27 @@ namespace TaskManagement.Application.Services
             var viewModel = _mapper.Map<TaskViewModel>(task);
             return viewModel;
         }
+        public async Task<List<FollowUpViewModel>> GetAllFollowUp()
+        {
+            var followup = await _repository.GetAllFollowUp();
 
+            var viewModel = _mapper.Map<List<FollowUpViewModel>>(followup);
+            return viewModel;
+        }
+        public async Task<FollowUpViewModel?> GetFollowUp(Guid idFollowUp)
+        {
+            var followup = await _repository.GetFollowUp(idFollowUp);
+
+            var viewModel = _mapper.Map<FollowUpViewModel>(followup);
+            return viewModel;
+        }
+        public async Task<List<CommentsViewModel>> GetComments(Guid idTask)
+        {
+            var comments = await _repository.GetComments(idTask);
+
+            var viewModel = _mapper.Map<List<CommentsViewModel>>(comments);
+            return viewModel;
+        }
         public async Task<ProjectViewModel> AddProject(Project input)
         {
             var project = await _repository.AddProject(input);
@@ -57,23 +77,24 @@ namespace TaskManagement.Application.Services
             var viewModel = _mapper.Map<TaskViewModel>(task);
             return viewModel;
         }
-        public async Task<TaskViewModel> AddComment(Guid idTask, string input)
+        public async Task<TaskEntity> AddComment(Guid idTask, string input)
         {
             var comment = new TaskComment(idTask, input);
-            var task = await _repository.AddComment(comment);
+            var task = await _repository.AddComment(idTask, comment);
 
-            var viewModel = _mapper.Map<TaskViewModel>(task);
-            return viewModel;
+            return task;
         }
-        public async Task<TaskEntity> AddFollowUp(Guid id, TaskUpdateInputModel input, Guid userId)
+        public async Task<TaskEntity> AddFollowUp(Guid idTask, TaskUpdateInputModel input, Guid userId)
         {
             var taskInput = _mapper.Map<TaskEntity>(input);
-            return await _repository.AddFollowUp(id, taskInput, userId);
+            return await _repository.AddFollowUp(idTask, taskInput, userId);
         }
 
-        public async Task UpdateTask(Guid id, TaskEntity task)
+        public async Task UpdateTask(Guid id, TaskUpdateInputModel task)
         {
-            await _repository.UpdateTask(id, task);
+            var taskInput = _mapper.Map<TaskEntity>(task);
+            taskInput.IdTask = id;
+            await _repository.UpdateTask(id, taskInput);
         }
 
         public async Task DeleteProject(Guid idProject)

@@ -6,8 +6,8 @@ namespace TaskManagement.Application.Services
 {
     public interface ITaskManagementService
     {
-        Task<TaskViewModel> AddComment(Guid idTask, string input);
-        Task<TaskEntity> AddFollowUp(Guid id, TaskUpdateInputModel input, Guid userId);
+        Task<TaskEntity> AddComment(Guid idTask, string input);
+        Task<TaskEntity> AddFollowUp(Guid idTask, TaskUpdateInputModel input, Guid userId);
         Task<ProjectViewModel> AddProject(Project input);
         Task<TaskViewModel> AddTask(Guid idProject, TaskEntity input);
         Task DeleteProject(Guid idProject);
@@ -15,6 +15,9 @@ namespace TaskManagement.Application.Services
         Task<List<ProjectViewModel>> GetAllProjects();
         Task<ProjectViewModel?> GetProject(Guid idProject);
         Task<TaskViewModel?> GetTask(Guid idTask);
-        Task UpdateTask(Guid id, TaskEntity task);
+        Task UpdateTask(Guid id, TaskUpdateInputModel task);
+        Task<FollowUpViewModel?> GetFollowUp(Guid idFollowUp);
+        Task<List<FollowUpViewModel>> GetAllFollowUp();
+        Task<List<CommentsViewModel>> GetComments(Guid idTask);
     }
 }

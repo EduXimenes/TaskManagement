@@ -38,12 +38,32 @@ namespace TaskManagement.Infrastructure.Persistence.Repositories
 
             return project;
         }
+        public async Task<List<TaskFollowUp>> GetAllFollowUp()
+        {
+            var followup = await _context.FollowUp
+                .ToListAsync();
+            return followup;
+        }
+        public async Task<TaskFollowUp?> GetFollowUp(Guid id)
+        {
+            var followup = await _context.FollowUp
+                    .SingleOrDefaultAsync(d => d.Id == id);
+
+            return followup;
+        }
         public async Task<TaskEntity?> GetTask(Guid id)
         {
             var task = await _context.Tasks
                     .Include(d => d.Comments)
                     .SingleOrDefaultAsync(d => d.IdTask == id);
             return task;
+        }
+        public async Task<List<TaskComment>> GetComments(Guid idTask)
+        {
+            var comments = await _context.Comments
+                .Where(d => d.idTask == idTask)
+                .ToListAsync();
+            return comments;
         }
         public async Task<Project> AddProject(Project project)
         {
@@ -69,49 +89,53 @@ namespace TaskManagement.Infrastructure.Persistence.Repositories
             return task;
 
         }
-         public async Task<TaskEntity> AddComment(TaskComment comment)
+         public async Task<TaskEntity> AddComment(Guid idTask, TaskComment comment)
         {
-            var task = await GetTask(comment.idTask);
+            var task = await GetTask(idTask);
             if (task == null)
             {
                 throw new Exception("Identificador de tarefa inválido.");
             }
-            task.Comments.Add(comment);
+            _context.Comments.Add(comment);
             await _context.SaveChangesAsync();
             return task;
         }
-        public async Task<TaskEntity> AddFollowUp(Guid id, TaskEntity task, Guid userId)
+        public async Task<TaskEntity> AddFollowUp(Guid idTask, TaskEntity task, Guid userId)
         {
             var taskUpdate = await _context.Tasks
-                    .SingleOrDefaultAsync(d => d.IdTask == id);
+                    .SingleOrDefaultAsync(d => d.IdTask == idTask);
             if (taskUpdate == null)
             {
                 throw new Exception("Identificador de tarefa inválido.");
             }
+            var comments = await GetComments(idTask);
+            taskUpdate.Comments = comments;
 
             var followUp = new TaskFollowUp(
-            task.IdTask,
-            task.Title,
-            task.Description,
-            task.ExpirationDate,
-            task.Status,
-            task.Priority,
-            task.Comments.Last()?.Description ?? "",
-            task.isDeleted,
+            taskUpdate.IdTask,
+            taskUpdate.Title,
+            taskUpdate.Description,
+            taskUpdate.ExpirationDate,
+            taskUpdate.Status,
+            taskUpdate.Priority,
+            taskUpdate.Comments.Any() ? taskUpdate.Comments.Last().Description ?? "" : "",
+            taskUpdate.isDeleted,
             userId);
 
             _context.FollowUp.Add(followUp);
+            await _context.SaveChangesAsync();
 
             return task;
         }
         public async Task UpdateTask(Guid id, TaskEntity task)
         {
             var taskUpdate = await _context.Tasks
-                        .SingleOrDefaultAsync(d => d.IdTask == id);
+                            .SingleOrDefaultAsync(d => d.IdTask == id);
             if (taskUpdate == null)
             {
                 throw new Exception("Identificador de tarefa inválido.");
             }
+            taskUpdate.UpdateInput(task);
             _context.Tasks.Update(taskUpdate);
             await _context.SaveChangesAsync();
         }

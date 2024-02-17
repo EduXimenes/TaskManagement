@@ -56,10 +56,13 @@ namespace TaskManagement.Infrastructure.Persistence
                     .HasMany(a => a.Comments)
                     .WithOne()
                     .HasForeignKey(b => b.idTask);
+
             builder.Entity<TaskComment>()
                    .HasKey(d => d.idComment);
+
             builder.Entity<TaskFollowUp>()
                    .HasKey(d => d.idFollowUp);
+
             builder.Entity<User>()
                     .HasKey(d => d.idUser);
         }
