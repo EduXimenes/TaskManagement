@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using TaskManagement.API;
 using TaskManagement.Application.Services;
 using TaskManagement.Infrastructure.Mapper;
 using TaskManagement.Infrastructure.Persistence;
@@ -9,16 +10,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 var con = builder.Configuration.GetConnectionString("TaskManagementCS");
 
-// Add services to the container.
 builder.Services.AddDbContext<TaskDbContext>(options => options.UseInMemoryDatabase("DevEventsInMemory"));
-//builder.Services.AddDbContext<TaskDbContext>(options =>
-//    options.UseSqlServer(con));
+//builder.Services.AddDbContext<TaskDbContext>(o => o.UseSqlServer(con));
 
 builder.Services.AddAutoMapper(typeof(TaskManagementProfile).Assembly);
 builder.Services.AddScoped<ITaskManagementService, TaskManagementService>();
 builder.Services.AddScoped<ITaskManagementRepository, TaskManagementRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<TaskManagementService>();
-//builder.Services.AddTransient<ITaskManagementRepository, TaskManagementRepository>();
 
 
 builder.Services.AddControllers();
@@ -41,6 +41,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+//DatabaseManagementService.MigrationInit(app);
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

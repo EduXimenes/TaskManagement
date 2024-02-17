@@ -11,12 +11,12 @@ namespace TaskManagement.Application.ViewModels
     public class TaskViewModel
     {
         public Guid IdTask { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
+        public string? Title { get; set; }
+        public string? Description { get; set; }
         public DateTime ExpirationDate { get; set; }
         public TaskStatusCode Status { get; set; }
         public TaskPriority Priority { get; set; }
-        public string Comments { get; set; }
+        public string? Comments { get; set; }
 
     }
 }

@@ -57,9 +57,10 @@ namespace TaskManagement.Application.Services
             var viewModel = _mapper.Map<TaskViewModel>(task);
             return viewModel;
         }
-        public async Task<TaskViewModel> AddComments(Guid idTask, string input)
+        public async Task<TaskViewModel> AddComment(Guid idTask, string input)
         {
-            var task = await _repository.AddComments(idTask, input);
+            var comment = new TaskComment(idTask, input);
+            var task = await _repository.AddComment(comment);
 
             var viewModel = _mapper.Map<TaskViewModel>(task);
             return viewModel;

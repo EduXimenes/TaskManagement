@@ -26,10 +26,6 @@ namespace TaskManagement.API.Controllers
             var projects = await _context.GetAllProjects();
             return Ok(projects);
         }
-            //var projects = _repository.GetAllProjects();
-
-            //var viewModel = _mapper.Map<List<ProjectViewModel>>(projects);
-            //return Ok(viewModel);
 
         [HttpGet("/GetProject/{idProject}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -63,14 +59,15 @@ namespace TaskManagement.API.Controllers
         [HttpPut("/UpdateTask/{idTask}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateTask(Guid idTask, TaskUpdateInputModel task)
+        public async Task<IActionResult> UpdateTask(Guid idTask,Guid idUser, TaskUpdateInputModel task)
         {
             var updateTask = await _context.GetTask(idTask);
             if (updateTask == null)
             {
                 return NotFound();
             }
-            var taskinput = await _context.AddFollowUp(idTask, task, Guid.NewGuid());
+
+            var taskinput = await _context.AddFollowUp(idTask, task, idUser);
 
             await _context.UpdateTask(idTask, taskinput);
 
@@ -105,16 +102,18 @@ namespace TaskManagement.API.Controllers
         [HttpPost("AddComment/{idTask}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> PostComment(Guid idTask, string input)
+        public async Task<IActionResult> PostComment(Guid idTask, Guid idUser, [FromBody] string input)
         {
             var task = await _context.GetTask(idTask);
             if (task == null)
             {
                 return NotFound();
             }            
-            await _context.AddComments(idTask, input);
+            var taskComment = await _context.AddComment(idTask, input);
+            var taskInput = _mapper.Map<TaskUpdateInputModel>(taskComment);
+            await _context.AddFollowUp(idTask, taskInput, idUser);
 
-            return Ok();
+            return Ok(taskComment);
         }
 
         [HttpDelete("DeleteTask/{idTask}")]
@@ -130,7 +129,6 @@ namespace TaskManagement.API.Controllers
             await _context.DeleteTask(idTask);
 
             return NoContent();
-
         }
         [HttpDelete("DeleteProject/{idProject}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

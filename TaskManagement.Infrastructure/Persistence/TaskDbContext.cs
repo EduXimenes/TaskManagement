@@ -1,11 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using TaskManagement.Core.Entities;
+
 
 namespace TaskManagement.Infrastructure.Persistence
 {
@@ -21,6 +17,9 @@ namespace TaskManagement.Infrastructure.Persistence
         public DbSet<TaskEntity> Tasks { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<TaskFollowUp> FollowUp { get; set; }
+        public DbSet<TaskComment> Comments { get; set; }
+        public DbSet<User> Users { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Project>(e =>
@@ -47,10 +46,6 @@ namespace TaskManagement.Infrastructure.Persistence
                     .IsRequired(true);
                 e.Property(de => de.ExpirationDate)
                     .IsRequired(true);
-                e.Property(de => de.Comments)
-                    .HasMaxLength(200)
-                    .HasColumnType("varchar(200)")
-                    .IsRequired(false);
             });
             builder.Entity<Project>()
                     .HasMany(a => a.Tasks)        
@@ -58,11 +53,15 @@ namespace TaskManagement.Infrastructure.Persistence
                     .HasForeignKey(b => b.Id); 
 
             builder.Entity<TaskEntity>()
-                    .HasMany(a => a.TaskFollowUp)
+                    .HasMany(a => a.Comments)
                     .WithOne()
-                    .HasForeignKey(b => b.IdTask);
+                    .HasForeignKey(b => b.idTask);
+            builder.Entity<TaskComment>()
+                   .HasKey(d => d.idComment);
             builder.Entity<TaskFollowUp>()
                    .HasKey(d => d.idFollowUp);
+            builder.Entity<User>()
+                    .HasKey(d => d.idUser);
         }
         
     }

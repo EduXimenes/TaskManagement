@@ -3,8 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using TaskManagement.Application.ViewModels;
 using TaskManagement.Core.Entities;
 
@@ -39,7 +41,7 @@ namespace TaskManagement.Infrastructure.Persistence.Repositories
         public async Task<TaskEntity?> GetTask(Guid id)
         {
             var task = await _context.Tasks
-                    .Include(d => d.TaskFollowUp)
+                    .Include(d => d.Comments)
                     .SingleOrDefaultAsync(d => d.IdTask == id);
             return task;
         }
@@ -67,14 +69,14 @@ namespace TaskManagement.Infrastructure.Persistence.Repositories
             return task;
 
         }
-         public async Task<TaskEntity> AddComments(Guid id, string comments)
+         public async Task<TaskEntity> AddComment(TaskComment comment)
         {
-            var task = await GetTask(id);
+            var task = await GetTask(comment.idTask);
             if (task == null)
             {
                 throw new Exception("Identificador de tarefa inválido.");
             }
-            task.Comments += " " + comments;
+            task.Comments.Add(comment);
             await _context.SaveChangesAsync();
             return task;
         }
@@ -87,9 +89,19 @@ namespace TaskManagement.Infrastructure.Persistence.Repositories
                 throw new Exception("Identificador de tarefa inválido.");
             }
 
-            var followUp = new TaskFollowUp(task.IdTask, task.Title, task.Description, task.ExpirationDate, task.Status, task.Priority, task.Comments, task.isDeleted, userId);
+            var followUp = new TaskFollowUp(
+            task.IdTask,
+            task.Title,
+            task.Description,
+            task.ExpirationDate,
+            task.Status,
+            task.Priority,
+            task.Comments.Last()?.Description ?? "",
+            task.isDeleted,
+            userId);
 
-            task.TaskFollowUp.Add(followUp);
+            _context.FollowUp.Add(followUp);
+
             return task;
         }
         public async Task UpdateTask(Guid id, TaskEntity task)
@@ -114,7 +126,6 @@ namespace TaskManagement.Infrastructure.Persistence.Repositories
             task.isDeleted = true;
             await _context.SaveChangesAsync();
         }
-
         public async Task DeleteProject(Guid idProject)
         {
             var project = await _context.Projects

@@ -8,7 +8,7 @@ namespace TaskManagement.Application.InputModels
 {
     public class ProjectInputModel
     {
-        public string Title { get; set; }
-        public string Description { get; set; }
+        public string? Title { get; set; }
+        public string? Description { get; set; }
     }
 }

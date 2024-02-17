@@ -10,8 +10,8 @@ namespace TaskManagement.Application.InputModels
 {
     public class TaskUpdateInputModel
     {
-        public string Title { get; set; }
-        public string Description { get; set; }
+        public string? Title { get; set; }
+        public string? Description { get; set; }
         public DateTime ExpirationDate { get; set; }
         public TaskStatusCode Status { get; set; }
     }

@@ -9,9 +9,9 @@ using static TaskManagement.Core.Enums.TaskStatusEnum;
 
 namespace TaskManagement.Core.Entities
 {
-    public class TaskFollowUp
+    public class TaskFollowUp : EntityBase
     {
-        public TaskFollowUp(Guid idTask, string title, string description, DateTime expirationDate, TaskStatusCode status, TaskPriority priority, string comments, bool isDeleted, Guid userId)
+        public TaskFollowUp(Guid idTask, string title, string description, DateTime expirationDate, TaskStatusCode status, TaskPriority priority, string comments, bool deleted, Guid userId) : base()
         {
             IdTask = idTask;
             Title = title;
@@ -20,10 +20,10 @@ namespace TaskManagement.Core.Entities
             Status = status;
             Priority = priority;
             Comments = comments;
-            this.isDeleted = isDeleted;
+            isDeleted = deleted;
             UserId = userId;
             ChangeDate = DateTime.Now;
-            this.idFollowUp = Guid.NewGuid();
+            idFollowUp = Id;
         }
         public Guid idFollowUp {  get; set; }
         public Guid IdTask { get; set; }
@@ -32,7 +32,7 @@ namespace TaskManagement.Core.Entities
         public DateTime ExpirationDate { get; set; }
         public TaskStatusCode Status { get; set; }
         public TaskPriority Priority { get; set; }
-        public string Comments { get; set; } 
+        public string? Comments { get; set; } 
         public bool isDeleted { get; set; } 
         public Guid UserId { get; set;}
         public DateTime ChangeDate { get; set; }

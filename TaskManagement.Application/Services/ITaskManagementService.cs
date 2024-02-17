@@ -6,7 +6,7 @@ namespace TaskManagement.Application.Services
 {
     public interface ITaskManagementService
     {
-        Task<TaskViewModel> AddComments(Guid idTask, string input);
+        Task<TaskViewModel> AddComment(Guid idTask, string input);
         Task<TaskEntity> AddFollowUp(Guid id, TaskUpdateInputModel input, Guid userId);
         Task<ProjectViewModel> AddProject(Project input);
         Task<TaskViewModel> AddTask(Guid idProject, TaskEntity input);

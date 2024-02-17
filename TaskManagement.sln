@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManagement.API", "TaskManagement.API\TaskManagement.API.csproj", "{AE9617EA-4144-4925-B889-AEE6A64EDF60}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskManagement.API", "TaskManagement.API\TaskManagement.API.csproj", "{AE9617EA-4144-4925-B889-AEE6A64EDF60}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManagement.Application", "TaskManagement.Application\TaskManagement.Application.csproj", "{9B5AC3D1-14E8-479D-8E23-566798F02AD3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskManagement.Application", "TaskManagement.Application\TaskManagement.Application.csproj", "{9B5AC3D1-14E8-479D-8E23-566798F02AD3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManagement.Core", "TaskManagement.Core\TaskManagement.Core.csproj", "{90388740-514F-489A-9FAD-DB3B43635BEB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskManagement.Core", "TaskManagement.Core\TaskManagement.Core.csproj", "{90388740-514F-489A-9FAD-DB3B43635BEB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManagement.Infrastructure", "TaskManagement.Infrastructure\TaskManagement.Infrastructure.csproj", "{0B556544-A80E-43F7-986E-E4C44C1B503D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskManagement.Infrastructure", "TaskManagement.Infrastructure\TaskManagement.Infrastructure.csproj", "{0B556544-A80E-43F7-986E-E4C44C1B503D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManagement.Test", "TaskManagement.Test\TaskManagement.Test.csproj", "{FF44B0AB-2FB2-4AD8-8C43-633919D1EB53}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManagement.Test", "TaskManagement.Test\TaskManagement.Test.csproj", "{4251DAC5-53C3-434D-9CA2-B8BCEDD46A0B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +35,10 @@ Global
 		{0B556544-A80E-43F7-986E-E4C44C1B503D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B556544-A80E-43F7-986E-E4C44C1B503D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B556544-A80E-43F7-986E-E4C44C1B503D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FF44B0AB-2FB2-4AD8-8C43-633919D1EB53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FF44B0AB-2FB2-4AD8-8C43-633919D1EB53}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FF44B0AB-2FB2-4AD8-8C43-633919D1EB53}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FF44B0AB-2FB2-4AD8-8C43-633919D1EB53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4251DAC5-53C3-434D-9CA2-B8BCEDD46A0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4251DAC5-53C3-434D-9CA2-B8BCEDD46A0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4251DAC5-53C3-434D-9CA2-B8BCEDD46A0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4251DAC5-53C3-434D-9CA2-B8BCEDD46A0B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
