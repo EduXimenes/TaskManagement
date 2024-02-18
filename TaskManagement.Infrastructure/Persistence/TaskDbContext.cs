@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using TaskManagement.Core.Entities;
 
 
@@ -7,6 +8,10 @@ namespace TaskManagement.Infrastructure.Persistence
 {
     public class TaskDbContext : DbContext
     {
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer("Data Source=sqlserver;Initial Catalog=TaskManagementDb;User ID=SA;Password=tasks#2024;TrustServerCertificate=True; Persist Security Info=True");
+        }
         public TaskDbContext(DbContextOptions<TaskDbContext> options) : base(options)
         {
         }

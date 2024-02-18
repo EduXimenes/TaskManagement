@@ -29,7 +29,7 @@ namespace TaskManagement.API.Controllers
             if (user.Result == null)
                 return NotFound("Usuário não encontrado.");
 
-            if (user.Result.Role == Role.Gerente)
+            if (user.Result.Role != Role.Gerente)
                 return BadRequest("Usuário não possui função de gerente.");
 
             var report = await _context.GetReport(idUser);
