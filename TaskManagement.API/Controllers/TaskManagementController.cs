@@ -4,6 +4,7 @@ using TaskManagement.Application.InputModels;
 using TaskManagement.Application.Services;
 using TaskManagement.Application.ViewModels;
 using TaskManagement.Core.Entities;
+using static TaskManagement.Core.Enums.TaskStatusEnum;
 
 namespace TaskManagement.API.Controllers
 {
@@ -13,7 +14,7 @@ namespace TaskManagement.API.Controllers
     {
         private readonly ITaskManagementService _context;
         private readonly IMapper _mapper;
-        public TaskManagementController(IMapper mapper, TaskManagementService taskManagementService)
+        public TaskManagementController(IMapper mapper, ITaskManagementService taskManagementService)
         {
             _mapper = mapper;
             _context = taskManagementService;
@@ -63,7 +64,7 @@ namespace TaskManagement.API.Controllers
             var followup = await _context.GetAllFollowUp();
             return Ok(followup);
         }
-        [HttpGet("/GetAllFollowUp/{idFollowUp}")]
+        [HttpGet("/GetFollowUp/{idFollowUp}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetFollowUp(Guid idFollowUp)
@@ -119,9 +120,12 @@ namespace TaskManagement.API.Controllers
         {
             var project = await _context.GetProject(idProject);
             if (project == null)
-            {
                 return NotFound();
-            }
+            var activeTasks = project.Tasks?
+                .Where(ts => ts.Status != TaskStatusCode.Concluida);
+            if (activeTasks?.Count() >= 20)
+                return BadRequest("O numero máximo de tarefas já foram atribuídas, conclua ou encerre alguma tarefa antes adicionar novas.");
+            
             var task = _mapper.Map<TaskEntity>(input);
             task.Id = idProject;
             await _context.AddTask(idProject, task);
@@ -170,6 +174,11 @@ namespace TaskManagement.API.Controllers
             {
                 return NotFound();
             }
+            var activeTasks = project.Tasks?
+                .Any(ts => ts.Status != TaskStatusCode.Concluida);
+            if (activeTasks != false)
+                return BadRequest("Existem tarefas pendentes neste projeto, conclua ou encerre as tarefas antes de remover o projeto.");
+
             await _context.DeleteProject(idProject);
 
             return NoContent();

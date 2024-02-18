@@ -35,11 +35,11 @@ namespace TaskManagement.Application.Services
             var viewModel = _mapper.Map<ProjectViewModel>(projects);
             return viewModel;
         }
-        public async Task<TaskViewModel?> GetTask(Guid idTask)
+        public async Task<TaskEntityViewModel?> GetTask(Guid idTask)
         {
             var task = await _repository.GetTask(idTask);
 
-            var viewModel = _mapper.Map<TaskViewModel>(task);
+            var viewModel = _mapper.Map<TaskEntityViewModel>(task);
             return viewModel;
         }
         public async Task<List<FollowUpViewModel>> GetAllFollowUp()
@@ -93,7 +93,7 @@ namespace TaskManagement.Application.Services
         public async Task UpdateTask(Guid id, TaskUpdateInputModel task)
         {
             var taskInput = _mapper.Map<TaskEntity>(task);
-            taskInput.IdTask = id;
+
             await _repository.UpdateTask(id, taskInput);
         }
 

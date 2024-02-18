@@ -40,15 +40,6 @@ namespace TaskManagement.Core.Entities
         public TaskPriority Priority { get; set; }
         public bool isDeleted { get; set; } = false;
         public List<TaskComment> Comments { get; set; } = new List<TaskComment>();
-        //blic List<TaskFollowUp> TaskFollowUp { get; set; } = new List<TaskFollowUp>();
-
-        public void UpdateInput(TaskEntity entity)
-        {
-            Title = entity.Title;
-            Description = entity.Description;
-            ExpirationDate = entity.ExpirationDate;
-            Status = entity.Status;
-        }
 
     }
 }

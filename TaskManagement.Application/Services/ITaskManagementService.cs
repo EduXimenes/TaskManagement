@@ -14,7 +14,7 @@ namespace TaskManagement.Application.Services
         Task DeleteTask(Guid idTask);
         Task<List<ProjectViewModel>> GetAllProjects();
         Task<ProjectViewModel?> GetProject(Guid idProject);
-        Task<TaskViewModel?> GetTask(Guid idTask);
+        Task<TaskEntityViewModel?> GetTask(Guid idTask);
         Task UpdateTask(Guid id, TaskUpdateInputModel task);
         Task<FollowUpViewModel?> GetFollowUp(Guid idFollowUp);
         Task<List<FollowUpViewModel>> GetAllFollowUp();

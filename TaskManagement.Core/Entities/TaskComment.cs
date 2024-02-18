@@ -8,15 +8,15 @@ namespace TaskManagement.Core.Entities
 {
     public class TaskComment : EntityBase
     {
-        public TaskComment(Guid idTask, string description): base()
+        public TaskComment(Guid idTask, string comment) : base()
         {
             idComment = Id;
             this.idTask = idTask;
-            Description = description;
+            Comment = comment;
         }
 
         public Guid idComment {  get; set; }
         public Guid idTask { get; set; }
-        public string Description { get; set; }
+        public string Comment { get; set; }
     }
 }

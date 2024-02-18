@@ -8,7 +8,6 @@ namespace TaskManagement.Application.ViewModels
 {
     public class CommentsViewModel
     {
-        public Guid idComment { get; set; }
         public Guid idTask { get; set; }
         public string? Comment { get; set; }
     }

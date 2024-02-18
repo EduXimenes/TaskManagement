@@ -15,6 +15,7 @@ namespace TaskManagement.Test.Core
         {
             var task = new Fixture().Create<TaskEntity>();
             
+
         }
     }
 }
