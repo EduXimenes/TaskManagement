@@ -33,6 +33,7 @@ O Gerenciador de Projetos é uma aplicação desenvolvida em ASP.NET 7 utilizand
 4. Para rodar o projeto digite no terminal: docker-compose up --build
 5. O Projeto foi configurado para rodar no Swagger para facilitar a visualização: http://localhost:8081/swagger/index.html
 6. É possível acessar as API's através do uso do Postman com seus respectivos endpoints.
+7. A documentação como endpoints e tipos de dados e entradas estão no arquivo APIDocumentation.txt, que pode ser inserido visualmente no site: https://editor.swagger.io/
 ![image](https://github.com/EduXimenes/TaskManagement/assets/53613863/3e2dd2d3-4653-485e-ae4c-970053c3aa3a)
 
 
