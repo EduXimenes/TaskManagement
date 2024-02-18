@@ -45,15 +45,34 @@ namespace TaskManagement.Infrastructure.Migrations
                     b.ToTable("Projects");
                 });
 
+            modelBuilder.Entity("TaskManagement.Core.Entities.TaskComment", b =>
+                {
+                    b.Property<Guid>("idComment")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("idTask")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("idComment");
+
+                    b.HasIndex("idTask");
+
+                    b.ToTable("Comments");
+                });
+
             modelBuilder.Entity("TaskManagement.Core.Entities.TaskEntity", b =>
                 {
                     b.Property<Guid>("IdTask")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Comments")
-                        .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -64,6 +83,9 @@ namespace TaskManagement.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("IdProject")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Priority")
@@ -95,16 +117,17 @@ namespace TaskManagement.Infrastructure.Migrations
                     b.Property<DateTime>("ChangeDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Comments")
-                        .IsRequired()
+                    b.Property<string>("Comment")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ExpirationDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("IdTask")
                         .HasColumnType("uniqueidentifier");
@@ -116,7 +139,6 @@ namespace TaskManagement.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("UserId")
@@ -127,35 +149,40 @@ namespace TaskManagement.Infrastructure.Migrations
 
                     b.HasKey("idFollowUp");
 
-                    b.HasIndex("IdTask");
-
                     b.ToTable("FollowUp");
                 });
 
             modelBuilder.Entity("TaskManagement.Core.Entities.User", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("idUser")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Role")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<bool>("isDeleted")
+                        .HasColumnType("bit");
+
+                    b.HasKey("idUser");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("TaskManagement.Core.Entities.TaskComment", b =>
+                {
+                    b.HasOne("TaskManagement.Core.Entities.TaskEntity", null)
+                        .WithMany("Comments")
+                        .HasForeignKey("idTask")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("TaskManagement.Core.Entities.TaskEntity", b =>
@@ -167,15 +194,6 @@ namespace TaskManagement.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TaskManagement.Core.Entities.TaskFollowUp", b =>
-                {
-                    b.HasOne("TaskManagement.Core.Entities.TaskEntity", null)
-                        .WithMany("TaskFollowUp")
-                        .HasForeignKey("IdTask")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("TaskManagement.Core.Entities.Project", b =>
                 {
                     b.Navigation("Tasks");
@@ -183,7 +201,7 @@ namespace TaskManagement.Infrastructure.Migrations
 
             modelBuilder.Entity("TaskManagement.Core.Entities.TaskEntity", b =>
                 {
-                    b.Navigation("TaskFollowUp");
+                    b.Navigation("Comments");
                 });
 #pragma warning restore 612, 618
         }

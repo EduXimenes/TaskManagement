@@ -10,8 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 var con = builder.Configuration.GetConnectionString("TaskManagementCS");
 
-builder.Services.AddDbContext<TaskDbContext>(options => options.UseInMemoryDatabase("DevEventsInMemory"));
-//builder.Services.AddDbContext<TaskDbContext>(o => o.UseSqlServer(con));
+//builder.Services.AddDbContext<TaskDbContext>(options => options.UseInMemoryDatabase("DevEventsInMemory"));
+builder.Services.AddDbContext<TaskDbContext>(o => o.UseSqlServer(con));
 
 builder.Services.AddAutoMapper(typeof(TaskManagementProfile).Assembly);
 builder.Services.AddScoped<ITaskManagementService, TaskManagementService>();
@@ -42,7 +42,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-//DatabaseManagementService.MigrationInit(app);
+DatabaseManagementService.MigrationInit(app);
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
