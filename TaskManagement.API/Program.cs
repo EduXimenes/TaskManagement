@@ -1,15 +1,26 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using TaskManagement.API;
+using TaskManagement.Application.Services;
 using TaskManagement.Infrastructure.Mapper;
 using TaskManagement.Infrastructure.Persistence;
 using TaskManagement.Infrastructure.Persistence.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+var con = builder.Configuration.GetConnectionString("TaskManagementCS");
+
 builder.Services.AddDbContext<TaskDbContext>(options => options.UseInMemoryDatabase("DevEventsInMemory"));
+//builder.Services.AddDbContext<TaskDbContext>(o => o.UseSqlServer(con));
+
 builder.Services.AddAutoMapper(typeof(TaskManagementProfile).Assembly);
-builder.Services.AddTransient<ITaskManagementRepository, TaskManagementRepository>();
+builder.Services.AddScoped<ITaskManagementService, TaskManagementService>();
+builder.Services.AddScoped<ITaskManagementRepository, TaskManagementRepository>();
+builder.Services.AddScoped<IPerformanceService, PerformanceService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<TaskManagementService>();
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -31,6 +42,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+//DatabaseManagementService.MigrationInit(app);
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

@@ -16,11 +16,22 @@ namespace TaskManagement.Infrastructure.Mapper
         {
             CreateMap<TaskEntity, TaskViewModel>();
             CreateMap<Project, ProjectViewModel>();
-
-            CreateMap<TaskInputModel, TaskEntity>();
-            CreateMap<ProjectInputModel, Project>();
             CreateMap<TaskEntity, TaskInputModel>();
             CreateMap<Project, ProjectInputModel>();
+            CreateMap<TaskInputModel, TaskEntity>();
+            CreateMap<TaskUpdateInputModel, TaskEntity>();
+            CreateMap<TaskEntity, TaskUpdateInputModel>();
+            CreateMap<TaskEntity, TaskEntityViewModel>();
+            CreateMap<TaskEntityViewModel, TaskEntity>();
+            CreateMap<TaskUpdateInputModel, TaskViewModel>();
+            CreateMap<ProjectInputModel, Project>();
+            CreateMap<TaskViewModel, TaskEntity>();
+            CreateMap<TaskFollowUp, FollowUpViewModel>();
+            CreateMap<FollowUpViewModel, TaskFollowUp>();
+            CreateMap<TaskComment, CommentsViewModel>();
+            CreateMap<CommentsViewModel, TaskComment>();
+            CreateMap<User, UserViewModel>();
+            CreateMap<UserInputModel, User>();
         }
     }
 }

@@ -1,0 +1,27 @@
+version: '3.4'
+
+services:
+  taskmanagement-api:
+    image: ${DOCKER_REGISTRY-}taskmanagement
+    build:
+      context: .
+      dockerfile: TaskManagement.API/Dockerfile
+    ports:
+      - "8081:80"
+    depends_on:
+      - sqlserver
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+
+  sqlserver:
+    container_name: sqlserver
+    image: mcr.microsoft.com/mssql/server:2017-latest-ubuntu
+    environment:
+      SA_PASSWORD: "tasks#2024"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Express"
+    ports:
+      - "1433:1433"
+
+volumes:
+  mssql-data:

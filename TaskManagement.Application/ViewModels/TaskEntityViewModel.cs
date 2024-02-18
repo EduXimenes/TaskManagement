@@ -8,7 +8,7 @@ using static TaskManagement.Core.Enums.TaskStatusEnum;
 
 namespace TaskManagement.Application.ViewModels
 {
-    public class TaskViewModel
+    public class TaskEntityViewModel
     {
         public Guid IdTask { get; set; }
         public string? Title { get; set; }
@@ -16,6 +16,6 @@ namespace TaskManagement.Application.ViewModels
         public DateTime ExpirationDate { get; set; }
         public TaskStatusCode Status { get; set; }
         public TaskPriority Priority { get; set; }
-
+        public bool isDeleted {  get; set; }
     }
 }

@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using TaskManagement.Application.InputModels;
+using TaskManagement.Application.Services;
 using TaskManagement.Application.ViewModels;
 using TaskManagement.Core.Entities;
-using TaskManagement.Infrastructure.Persistence.Repositories;
+using static TaskManagement.Core.Enums.TaskStatusEnum;
 
 namespace TaskManagement.API.Controllers
 {
@@ -12,29 +12,28 @@ namespace TaskManagement.API.Controllers
         [ApiController]
     public class TaskManagementController : ControllerBase
     {
-        private readonly ITaskManagementRepository _repository;
+        private readonly ITaskManagementService _context;
         private readonly IMapper _mapper;
-        public TaskManagementController(ITaskManagementRepository repository, IMapper mapper)
+        public TaskManagementController(IMapper mapper, ITaskManagementService taskManagementService)
         {
-            _repository = repository;
             _mapper = mapper;
+            _context = taskManagementService;
         }
 
         [HttpGet("/GetAllProjects")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult GetAllProjects()
+        public async Task<IActionResult> GetAllProjects()
         {
-            var projects = _repository.GetAllProjects();
-
-            var viewModel = _mapper.Map<List<ProjectViewModel>>(projects);
-            return Ok(viewModel);
+            var projects = await _context.GetAllProjects();
+            return Ok(projects);
         }
+        
         [HttpGet("/GetProject/{idProject}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetProjectById(Guid idProject)
+        public async Task<IActionResult> GetProjectById(Guid idProject)
         {
-            var project = _repository.GetProject(idProject);
+            var project = await _context.GetProject(idProject);
 
             if (project == null)
             {
@@ -47,9 +46,9 @@ namespace TaskManagement.API.Controllers
         [HttpGet("/GetTask/{idTask}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetTask(Guid idTask)
+        public async Task<IActionResult> GetTask(Guid idTask)
         {
-            var task = _repository.GetTask(idTask);
+            var task = await _context.GetTask(idTask);
 
             if (task == null)
             {
@@ -58,86 +57,129 @@ namespace TaskManagement.API.Controllers
 
             return Ok(task);
         }
+        [HttpGet("/GetFollowUps")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllFollowUp()
+        {
+            var followup = await _context.GetAllFollowUp();
+            return Ok(followup);
+        }
+        [HttpGet("/GetFollowUp/{idFollowUp}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetFollowUp(Guid idFollowUp)
+        {
+            var followup = await _context.GetFollowUp(idFollowUp);
+
+            if (followup == null)
+            {
+                return NotFound();
+            }
+            var viewModel = _mapper.Map<TaskFollowUp>(followup);
+
+            return Ok(viewModel);
+        }
+        [HttpGet("/GetComments/{idTask}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetComments(Guid idTask)
+        {
+            var comments = await _context.GetComments(idTask);
+            return Ok(comments);
+        }
+
         [HttpPut("/UpdateTask/{idTask}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult UpdateTask(Guid idTask, TaskInputModel task)
+        public async Task<IActionResult> UpdateTask(Guid idTask,Guid idUser, TaskUpdateInputModel task)
         {
-            var updateTask = _repository.GetTask(idTask);
+            var updateTask = await _context.GetTask(idTask);
             if (updateTask == null)
             {
                 return NotFound();
             }
-            var input = _mapper.Map<TaskEntity>(task);
-            _repository.UpdateTask(idTask, input);
+            await _context.UpdateTask(idTask, task);
+
+            await _context.AddFollowUp(idTask, task, idUser);
 
             return Ok();
         }
         [HttpPost("CreateProject/")]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public IActionResult PostProject(ProjectInputModel input)
+        public async Task<IActionResult> PostProject(ProjectInputModel input)
         {
             var project = _mapper.Map<Project>(input);
-            _repository.AddProject(project);
-            return Created("New Project", project);
+            await _context.AddProject(project);
+            var result = _mapper.Map<ProjectViewModel>(project);
+            return Created("New Project", result);
         }
         [HttpPost("CreateTask/{idProject}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult PostTask(Guid idProject, TaskInputModel input)
+        public async Task<IActionResult> PostTask(Guid idProject, TaskInputModel input)
         {
-            var project = _repository.GetProject(idProject);
+            var project = await _context.GetProject(idProject);
             if (project == null)
-            {
                 return NotFound();
-            }
+            var activeTasks = project.Tasks?
+                .Where(ts => ts.Status != TaskStatusCode.Concluida);
+            if (activeTasks?.Count() >= 20)
+                return BadRequest("O numero máximo de tarefas já foram atribuídas, conclua ou encerre alguma tarefa antes adicionar novas.");
+            
             var task = _mapper.Map<TaskEntity>(input);
             task.Id = idProject;
-            _repository.AddTask(idProject, task);
+            await _context.AddTask(idProject, task);
+            var result = _mapper.Map<TaskViewModel>(task);
 
-            return Created("New Task", task);
+            return Created("New Task", result);
         }
         [HttpPost("AddComment/{idTask}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult PostComment(Guid idTask, string input)
+        public async Task<IActionResult> PostComment(Guid idTask, Guid idUser, [FromBody] string input)
         {
-            var task = _repository.GetTask(idTask);
+            var task = await _context.GetTask(idTask);
             if (task == null)
             {
                 return NotFound();
             }            
-            _repository.AddComments(idTask, input);
+            var taskComment = await _context.AddComment(idTask, input);
+            var taskInput = _mapper.Map<TaskUpdateInputModel>(taskComment);
+            await _context.AddFollowUp(idTask, taskInput, idUser);
 
-            return Created("New comment", task);
+            return Ok(taskComment.Comments);
         }
 
         [HttpDelete("DeleteTask/{idTask}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult DeleteTask(Guid idTask)
+        public async Task<IActionResult> DeleteTask(Guid idTask)
         {
-            var task = _repository.GetTask(idTask);
+            var task = await _context.GetTask(idTask);
             if (task == null)
             {
                 return NotFound();
             }
-            _repository.DeleteTask(idTask);
+            await _context.DeleteTask(idTask);
 
             return NoContent();
-
         }
         [HttpDelete("DeleteProject/{idProject}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult DeleteProject(Guid idProject)
+        public async Task<IActionResult> DeleteProject(Guid idProject)
         {
-            var project = _repository.GetProject(idProject);
+            var project = await _context.GetProject(idProject);
             if (project == null)
             {
                 return NotFound();
             }
-            _repository.DeleteProject(idProject);
+            var activeTasks = project.Tasks?
+                .Any(ts => ts.Status != TaskStatusCode.Concluida);
+            if (activeTasks != false)
+                return BadRequest("Existem tarefas pendentes neste projeto, conclua ou encerre as tarefas antes de remover o projeto.");
+
+            await _context.DeleteProject(idProject);
 
             return NoContent();
 
